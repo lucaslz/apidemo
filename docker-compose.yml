@@ -1,0 +1,38 @@
+version: '3'
+
+volumes:
+    logs:
+        driver: local
+    database:
+        driver: local
+
+services:
+    slim:
+        image: php:5.6
+        restart: always
+        working_dir: /var/www
+        command: php -S 0.0.0.0:8080 -t public
+        environment:
+            docker: "true"
+        ports:
+            - 8080:8080
+        volumes:
+            - .:/var/www
+            - logs:/var/www/logs
+    mysql:
+        image: mysql:8
+        restart: always
+        environment:
+            MYSQL_DATABASE: "world"
+            MYSQL_ROOT_PASSWORD: "sqlmestre"
+        ports:
+            - 3306:3306
+        volumes:
+            - database:/var/lib/mysql
+    phpmyadmin:
+        image: phpmyadmin
+        restart: always
+        ports:
+            - 8090:80
+        environment:
+            - PMA_ARBITRARY=1
